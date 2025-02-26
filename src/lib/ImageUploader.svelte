@@ -13,29 +13,28 @@ function handleDrop(event: DragEvent) {
             const img = new Image();
             img.onload = () => {
                 const canvas = document.createElement('canvas');
-                canvas.width = 800;
-                canvas.height = 600;
+                canvas.width = 2024;
+                canvas.height = 2024;
                 const ctx = canvas.getContext('2d');
                 
                 const srcWidth = img.width;
                 const srcHeight = img.height;
                 
-                // クロップする長方形の計算
-                const cropWidth = srcWidth / 2; // 横の1/2を長辺とする
-                const cropHeight = cropWidth * 3/4; // 4:3の比率で高さを計算
+                // クロップする正方形の計算
+                const cropSize = Math.min(srcWidth, srcHeight); // 短い辺に合わせて正方形にクロップ
                 
-                // 中心点の計算（左端から短辺/2、上から1/2の位置）
-                const centerX = srcHeight / 2; // 左端から短辺/2の位置
-                const centerY = srcHeight*4 / 7;
+                // 中心点の計算
+                const centerX = srcHeight / 2;
+                const centerY = srcHeight / 2;
                 
                 // クロップ範囲の計算
-                const cropX = centerX - (cropWidth / 2);
-                const cropY = centerY - (cropHeight / 2);
+                const cropX = centerX - (cropSize / 2);
+                const cropY = centerY - (cropSize / 2);
                 
-                // クロップして800x600にリサイズ
+                // クロップして2024x2024にリサイズ
                 ctx?.drawImage(
                     img,
-                    cropX, cropY, cropWidth, cropHeight, // ソース範囲
+                    cropX, cropY, cropSize, cropSize, // ソース範囲
                     0, 0, canvas.width, canvas.height // 出力範囲
                 );
                 
@@ -89,7 +88,7 @@ function handleDragLeave() {
                     <div class="stats shadow">
                         <div class="stat place-items-center">
                             <div class="stat-title">サイズ</div>
-                            <div class="stat-value text-primary">800×600</div>
+                            <div class="stat-value text-primary">2024×2024</div>
                             <div class="stat-desc">JPEG形式</div>
                         </div>
                     </div>
@@ -120,7 +119,7 @@ function handleDragLeave() {
 
 .thumbnail {
     width: 150px;
-    height: 112px; /* 800x600の比率に合わせて調整 */
+    height: 150px;
     object-fit: cover;
     display: block;
     margin-left: auto;
