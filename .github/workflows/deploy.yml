@@ -43,7 +43,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: 'booth-library/build'
+          path: 'simple_resizer/build'
 
   deploy:
     environment:
