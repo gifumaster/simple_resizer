@@ -26,7 +26,7 @@ function handleDrop(event: DragEvent) {
                 
                 // 中心点の計算（左端から短辺/2、上から1/2の位置）
                 const centerX = srcHeight / 2; // 左端から短辺/2の位置
-                const centerY = srcHeight / 2;
+                const centerY = srcHeight*4 / 7;
                 
                 // クロップ範囲の計算
                 const cropX = centerX - (cropWidth / 2);
