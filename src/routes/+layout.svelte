@@ -1,12 +1,13 @@
 <script lang="ts">
 	import '../app.css';
+	import { base } from '$app/paths';
 	let { children } = $props();
 </script>
 
 <div class="min-h-screen bg-base-100">
     <header class="navbar bg-base-200 shadow-lg">
         <div class="flex-1">
-            <a class="btn btn-ghost normal-case text-xl">Simple Resizer</a>
+            <a href="{base}/" class="btn btn-ghost normal-case text-xl">Simple Resizer</a>
         </div>
     </header>
 
