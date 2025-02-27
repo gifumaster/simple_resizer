@@ -3,6 +3,7 @@ import { onMount } from 'svelte';
 
 let imageSrc = '';
 let downloadLink = '';
+let outputSize = 0;
 
 function handleDrop(event: DragEvent) {
     event.preventDefault();
@@ -12,18 +13,23 @@ function handleDrop(event: DragEvent) {
         reader.onload = (e) => {
             const img = new Image();
             img.onload = () => {
-                const canvas = document.createElement('canvas');
-                canvas.width = 2024;
-                canvas.height = 2024;
-                const ctx = canvas.getContext('2d');
-                
                 const srcWidth = img.width;
                 const srcHeight = img.height;
+                
+                // 出力サイズの決定
+                outputSize = (srcWidth <= 1920 && srcHeight <= 1024) ? 1024 : 2024;
+                
+                const canvas = document.createElement('canvas');
+                canvas.width = outputSize;
+                canvas.height = outputSize;
+                const ctx = canvas.getContext('2d');
                 
                 // クロップする正方形の計算
                 const cropSize = Math.min(srcWidth, srcHeight); // 短い辺に合わせて正方形にクロップ
                 
                 // 中心点の計算
+                // NOTE: centerXにsrcHeightを使用しているのは意図的です。
+                // これにより、画像の垂直中心線上で水平方向のクロップ位置が決定されます。
                 const centerX = srcHeight / 2;
                 const centerY = srcHeight / 2;
                 
@@ -31,7 +37,7 @@ function handleDrop(event: DragEvent) {
                 const cropX = centerX - (cropSize / 2);
                 const cropY = centerY - (cropSize / 2);
                 
-                // クロップして2024x2024にリサイズ
+                // クロップしてリサイズ
                 ctx?.drawImage(
                     img,
                     cropX, cropY, cropSize, cropSize, // ソース範囲
@@ -88,7 +94,7 @@ function handleDragLeave() {
                     <div class="stats shadow">
                         <div class="stat place-items-center">
                             <div class="stat-title">サイズ</div>
-                            <div class="stat-value text-primary">2024×2024</div>
+                            <div class="stat-value text-primary">{outputSize}×{outputSize}</div>
                             <div class="stat-desc">JPEG形式</div>
                         </div>
                     </div>
