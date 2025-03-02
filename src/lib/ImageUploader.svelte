@@ -17,7 +17,7 @@ function handleDrop(event: DragEvent) {
                 const srcHeight = img.height;
                 
                 // 出力サイズの決定
-                outputSize = (srcWidth <= 1920 && srcHeight <= 1024) ? 1024 : 2024;
+                outputSize = (srcWidth <= 1920 && srcHeight <= 1024) ? 1024 : 2048;
                 
                 const canvas = document.createElement('canvas');
                 canvas.width = outputSize;
