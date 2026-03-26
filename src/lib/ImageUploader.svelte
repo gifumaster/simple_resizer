@@ -1,8 +1,7 @@
 <script lang="ts">
-import { onMount } from 'svelte';
-
 let images: { src: string; downloadLink: string; outputSize: number }[] = [];
 let fileInput: HTMLInputElement;
+const MAX_IMAGES = 50;
 
 function processImage(file: File) {
     if (file && file.type.startsWith('image/')) {
@@ -35,11 +34,7 @@ function processImage(file: File) {
                 const imageSrc = canvas.toDataURL('image/jpeg');
                 const downloadLink = imageSrc.replace('image/jpeg', 'image/octet-stream');
 
-                // 画像を配列に追加
-                if (images.length >= 10) {
-                    images = images.slice(1); // 最初の画像を削除
-                }
-                images = [...images, { src: imageSrc, downloadLink, outputSize }];
+                images = [...images, { src: imageSrc, downloadLink, outputSize }].slice(-MAX_IMAGES);
             };
             img.src = e.target?.result as string;
         };
@@ -47,20 +42,26 @@ function processImage(file: File) {
     }
 }
 
-function handleDrop(event: DragEvent) {
-    event.preventDefault();
-    const file = event.dataTransfer?.files[0];
-    if (file) {
+function processFiles(fileList: FileList | null | undefined) {
+    if (!fileList) {
+        return;
+    }
+
+    for (const file of Array.from(fileList)) {
         processImage(file);
     }
 }
 
+function handleDrop(event: DragEvent) {
+    event.preventDefault();
+    isHovered = false;
+    processFiles(event.dataTransfer?.files);
+}
+
 function handleFileSelect(event: Event) {
     const target = event.target as HTMLInputElement;
-    const file = target.files?.[0];
-    if (file) {
-        processImage(file);
-    }
+    processFiles(target.files);
+    target.value = '';
 }
 
 function handleDragOver(event: DragEvent) {
@@ -93,12 +94,13 @@ function removeImage(index: number) {
         on:dragleave={handleDragLeave}
     >
         <div class="card-body items-center text-center">
-            <p class="text-base-content/70">画像をドラッグ&ドロップ、または選択してください</p>
+            <p class="text-base-content/70">画像を複数まとめてドラッグ&ドロップ、または選択してください</p>
             <label class="btn btn-outline btn-sm mt-2 border-primary">
                 ファイルを選択
                 <input
                     type="file"
                     accept="image/*"
+                    multiple
                     class="hidden"
                     on:change={handleFileSelect}
                     bind:this={fileInput}
